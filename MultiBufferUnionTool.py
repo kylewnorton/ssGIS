@@ -1,4 +1,7 @@
 import arcpy
+from arcpy import env
+
+env.workspace = r"\\Mac\Home\Desktop\SS GIS-Zoning-Competition\Utah\Utah County\Novell Campus Storage\Novell Campus Storage.gdb"
 
 # union tool - Cant get this section to work with the actual commands below...so I changed the commands below to something that worked
 # in_features1 = ["PossNovellSSFac_Buffer1", "tl_2016_49_tract_Copy"]
@@ -11,10 +14,10 @@ import arcpy
 # arcpy.Union_analysis (in_features1, out_feature_class1)
 # arcpy.Union_analysis (in_features2, out_feature_class2)
 # arcpy.Union_analysis (in_features3, out_feature_class3)
-arcpy.analysis.Union("PossNovellSSFac_Buffer1 #;tl_2016_49_tract_Copy #", r"\\Mac\Home\Desktop\SS GIS-Zoning-Competition\Utah\Utah County\Novell Campus Storage\Novell Campus Storage.gdb\BufferUnion1", "ALL", None, "GAPS")
-arcpy.analysis.Union("PossNovellSSFac_Buffer2 #;tl_2016_49_tract_Copy #", r"\\Mac\Home\Desktop\SS GIS-Zoning-Competition\Utah\Utah County\Novell Campus Storage\Novell Campus Storage.gdb\BufferUnion2", "ALL", None, "GAPS")
-arcpy.analysis.Union("PossNovellSSFac_Buffer3 #;tl_2016_49_tract_Copy #", r"\\Mac\Home\Desktop\SS GIS-Zoning-Competition\Utah\Utah County\Novell Campus Storage\Novell Campus Storage.gdb\BufferUnion3", "ALL", None, "GAPS")
 
+arcpy.Union_analysis(r"Buffers\PossNovellSSFac_Buffer1 #;Tract_PCT #", "BufferUnion1", "ALL", None, "GAPS")
+arcpy.Union_analysis(r"Buffers\PossNovellSSFac_Buffer2 #;Tract_PCT #", "BufferUnion2", "ALL", None, "GAPS")
+arcpy.Union_analysis(r"Buffers\PossNovellSSFac_Buffer3 #;Tract_PCT #", "BufferUnion3", "ALL", None, "GAPS")
 
 # Make a layer tool uses the field info tool to get ratios for splitting demographics
 # MakeFeatureLayer_management (in_features, out_layer, {where_clause}, {workspace}, {field_info})
