@@ -14,10 +14,12 @@ env.workspace = r"\\Mac\Home\Desktop\SS GIS-Zoning-Competition\Utah\Utah County\
 # arcpy.Union_analysis (in_features1, out_feature_class1)
 # arcpy.Union_analysis (in_features2, out_feature_class2)
 # arcpy.Union_analysis (in_features3, out_feature_class3)
+bufferList = ["1", "2", "3"]
+inFeatures = ["Buffers\PossNovellSSFac_Buffer", "Tract_PCT"]
 
-arcpy.Union_analysis(r"Buffers\PossNovellSSFac_Buffer1 #;Tract_PCT #", "BufferUnion1", "ALL", None, "GAPS")
-arcpy.Union_analysis(r"Buffers\PossNovellSSFac_Buffer2 #;Tract_PCT #", "BufferUnion2", "ALL", None, "GAPS")
-arcpy.Union_analysis(r"Buffers\PossNovellSSFac_Buffer3 #;Tract_PCT #", "BufferUnion3", "ALL", None, "GAPS")
+for bufferListIndex in bufferList:
+    currentBufferUnion = "BufferUnion" + bufferListIndex
+    arcpy.Union_analysis([inFeatures[0] + bufferListIndex, inFeatures[1]], currentBufferUnion)
 
 # Make a layer tool uses the field info tool to get ratios for splitting demographics
 # MakeFeatureLayer_management (in_features, out_layer, {where_clause}, {workspace}, {field_info})
