@@ -5,7 +5,7 @@ from arcpy import env
 env.workspace = "C:/desktop/SS GIS-Zoning-Competition"
 
 # Prep environments
-featureClassesForDeletion = ["LeftOver", "F1Capture", "BufferUnion", "Alpine_Buffer"]
+featureClassesForDeletion = ["LeftOver", "F1Capture", "BufferUnion", "Alpine_Buffer", "Sum_Stats", "Sum_Stats1"]
 for thingVariable in featureClassesForDeletion:
     arcpy.management.Delete(thingVariable, None)
 
@@ -82,7 +82,7 @@ arcpy.AddField_management(inFeatures, fieldName4, "DOUBLE", fieldPrecision)
 Multiplier = 7.93
 
 # Times the TotPop times the Utah SLC 7.93/per person
-arcpy.management.CalculateField("Sum_Stats", "SFDemanded", "!SUM_tl_2016_49_tract_TotPop! * Multiplier", "PYTHON_9.3", None)
+arcpy.management.CalculateField("Sum_Stats", "Sum_Stats.SFDemanded", "!Sum_Stats.SUM_tl_2016_49_tract_TotPop! * Multiplier", "PYTHON_9.3", None)
 arcpy.management.CalculateField("Sum_Stats", "FacilityID", "0", "PYTHON_9.3", None)
 
 #**************************************************************
@@ -93,7 +93,7 @@ fc = "Alpine"
 field = "NetSF"
 cursor = arcpy.SearchCursor(fc)
 
-print (cursor)
+# print (cursor)
 
 for rowsupply in cursor:
     suppliedsf = (rowsupply.getValue(field))
