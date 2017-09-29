@@ -12,6 +12,7 @@ env.workspace = r"\\Mac\Home\Desktop\SS GIS-Zoning-Competition\Utah\Utah County\
 
 # Make a layer tool uses the field info tool to get ratios for splitting demographics#
 
+
 #Union Tool - Combine the Buffer Outputs with the Census Tracts
 radiusList = ["1", "2", "3"]
 inFeatures = ["Buffers\PossNovellSSFac_Buffer", "TractRatioLayer"]
@@ -28,7 +29,6 @@ for radiusListIndex in radiusList:
 
     # sum up the people located in the buffer shown in feature class F1Capture
     arcpy.Statistics_analysis("FacilityCapture" + radiusListIndex + "M", "Sum_Stats" + radiusListIndex, [["TotPop", "SUM"]])
-
 
 # Why can't I print this?...weird...because arcpy/arcGIS does not allow it?
 # print "All Done!"
