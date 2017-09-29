@@ -44,7 +44,7 @@ arcpy.env.outputCoordinateSystem = arcpy.SpatialReference("NAD 1983 UTM Zone 12N
 
 
 # union tool
-in_features = ["Alpine_Buffer", "tract_PCT"]
+in_features = ["Alpine_Buffer", "SLCoTractsDiv"]
 out_feature_class = "BufferUnion"
 
 arcpy.Union_analysis (in_features, out_feature_class)
@@ -59,9 +59,9 @@ outputout_layer = "LeftOver"
 arcpy.MakeFeatureLayer_management (input_features, outputin_layer, "FID_Alpine_Buffer = 1")
 arcpy.MakeFeatureLayer_management (input_features, outputout_layer, "FID_Alpine_Buffer = -1")
 
-
+fieldToSum = "why_csv_Total_population"
 # sum up the people located in the buffer shown in feature class F1Capture
-arcpy.Statistics_analysis("F1Capture", "Sum_Stats", [["TotPop", "SUM"]])
+arcpy.Statistics_analysis("F1Capture", "Sum_Stats", [[fieldToSum, "SUM"]])
 
 # times the Sum by the SF demand per person
 # First, Add the field to the sum table
@@ -80,10 +80,13 @@ arcpy.AddField_management(inFeatures, fieldName4, "DOUBLE", fieldPrecision)
 
 # Set local variable(s)
 Multiplier = 7.93
+tableToCalc = "Sum_Stats"
+fieldToCalc = "SFDemanded"
+capPopField = "!SUM_why_csv_Total_population!"
 
 # Times the TotPop times the Utah SLC 7.93/per person
-arcpy.management.CalculateField("Sum_Stats", "Sum_Stats.SFDemanded", "!Sum_Stats.SUM_tl_2016_49_tract_TotPop! * Multiplier", "PYTHON_9.3", None)
-arcpy.management.CalculateField("Sum_Stats", "FacilityID", "0", "PYTHON_9.3", None)
+arcpy.management.CalculateField(tableToCalc, fieldToCalc, "capPopField * Multiplier", "PYTHON_9.3", None)
+
 
 #**************************************************************
 # to calculate if the script grew the buffer to be big enough
