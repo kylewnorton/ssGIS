@@ -15,14 +15,14 @@ def resetEnvironment(featureClassesForDeletion, fieldsForDeletion):
     for featureClass in featureClassesForDeletion:
         arcpy.management.Delete(featureClass, None)
 
-
     for field in fieldDeletion:
         arcpy.management.DeleteField("Alpine", field)
 
+    return;
 
 def isDemandGreaterThanSupply(demand, supply):
     print(demand > supply)
-
+    return;
 # FUNCTIONS
 
 featureClassesForDeletion = ["LeftOver", "facCapture", "BufferUnion", "AlpineBuffer", "sumStats", "Buffer"]
