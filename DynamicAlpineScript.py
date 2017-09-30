@@ -8,8 +8,19 @@ env.workspace = "C:/desktop/SS GIS-Zoning-Competition"
 # Set the workspace, outputCoordinateSystem and maybe look at geographicTransformations environments if there are still problems
 arcpy.env.outputCoordinateSystem = arcpy.SpatialReference("NAD 1983 UTM Zone 12N")
 
+# VARIABLES
+featureClassesForDeletion = ["LeftOver", "facCapture", "BufferUnion", "AlpineBuffer", "sumStats", "Buffer"]
+fieldsForDeletion = ["NetSF", "NetSF95Occ"]
+featureClass = "Alpine"
+radius = .1
+supply = None
+demand = None
+netSquareFeet = None
+# VARIABLES
+
 
 # FUNCTIONS
+
 # Reset environment
 def resetEnvironment(featureClassesForDeletion, fieldsForDeletion):
     for featureClass in featureClassesForDeletion:
@@ -18,33 +29,33 @@ def resetEnvironment(featureClassesForDeletion, fieldsForDeletion):
     for field in fieldDeletion:
         arcpy.management.DeleteField("Alpine", field)
 
-    return;
+    return;    
 
 def isDemandGreaterThanSupply(demand, supply):
     print(demand > supply)
-    return;
+    return demand > supply;
+
+def getNetSquareFootageAsFloat(netSqFt):
+    return float(netSqFt);
+
+def getValueFromCompetitionTable(field):
+    cursor = arcpy.SearchCursor(featureClass)
+
+    for rowsupply in cursor:
+        value = float((rowsupply.getValue(field)))
+
+    return value;
 # FUNCTIONS
 
-featureClassesForDeletion = ["LeftOver", "facCapture", "BufferUnion", "AlpineBuffer", "sumStats", "Buffer"]
-fieldsForDeletion = ["NetSF", "NetSF95Occ"]
+
 resetEnvironment(featureClassesForDeletion, fieldsForDeletion)
 
 
-radius = .1
 while radius < .9:
     resetEnvironment(featureClassesForDeletion, fieldsForDeletion)
 
-    # Add a Numeric Field for the facility then use the calculate tool to get a numeric value in the field
-    fieldName = ["NetSF", "NetSF95Occ"]
-    for fieldNameIndex in fieldName:
-        facility = "Alpine"
-        fieldPrecision = 15
-        arcpy.AddField_management(facility, fieldNameIndex, "DOUBLE", fieldPrecision)
-
-    # I know there is a way to incorporate this into the for loop above...but I am unsure on how to do it.
-    arcpy.management.CalculateField(facility, "NetSF", '"250,466.00"', "PYTHON_9.3", None) #interesting syntax for the 250,466!!!!!!!!!!!!!!!!!!!!!!!
-    arcpy.management.CalculateField(facility, "NetSF95Occ", "!NetSF! * .95", "PYTHON_9.3", None)
-
+    netSquareFeet = getValueFromCompetitionTable("Net")
+    supply = netSquareFeet
 
     # the buffer tool
     facility = "Alpine"
@@ -91,21 +102,13 @@ while radius < .9:
     arcpy.management.CalculateField(tableToCalc, fieldToCalc, "!SUM_why_csv_Total_population! * 7.93", "PYTHON_9.3", None)
 
     #**************************************************************
-    fc = "Alpine"
-    field = "NetSF"
-    cursor = arcpy.SearchCursor(fc)
-
-    # print (cursor)
-
-    for rowsupply in cursor:
-        suppliedsf = (rowsupply.getValue(field))
-
+    
     fc = "sumStats"
     field = "SFDemanded"
     cursor = arcpy.SearchCursor(fc)
     for rowdemand in cursor:
         demandedsf = (rowdemand.getValue(field))
 
-    isDemandGreaterThanSupply(demandedsf, suppliedsf)
+    isDemandGreaterThanSupply(demandedsf, supply)
 
     radius += .1
