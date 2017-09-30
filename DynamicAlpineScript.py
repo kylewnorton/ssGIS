@@ -8,25 +8,31 @@ env.workspace = "C:/desktop/SS GIS-Zoning-Competition"
 # Set the workspace, outputCoordinateSystem and maybe look at geographicTransformations environments if there are still problems
 arcpy.env.outputCoordinateSystem = arcpy.SpatialReference("NAD 1983 UTM Zone 12N")
 
-# Prep environments
-featureClassesForDeletion = ["LeftOver", "facCapture", "BufferUnion", "AlpineBuffer", "sumStats", "Buffer"]
-for thingVariable in featureClassesForDeletion:
-    arcpy.management.Delete(thingVariable, None)
 
-fieldDeletion = ["NetSF", "NetSF95Occ"]
-for field in fieldDeletion:
-    arcpy.management.DeleteField("Alpine", field)
+# FUNCTIONS
+# Reset environment
+def resetEnvironment(featureClassesForDeletion, fieldsForDeletion):
+    for featureClass in featureClassesForDeletion:
+        arcpy.management.Delete(featureClass, None)
+
+
+    for field in fieldDeletion:
+        arcpy.management.DeleteField("Alpine", field)
+
+
+def isDemandGreaterThanSupply(demand, supply):
+    print(demand > supply)
+
+# FUNCTIONS
+
+featureClassesForDeletion = ["LeftOver", "facCapture", "BufferUnion", "AlpineBuffer", "sumStats", "Buffer"]
+fieldsForDeletion = ["NetSF", "NetSF95Occ"]
+resetEnvironment(featureClassesForDeletion, fieldsForDeletion)
+
 
 radius = .1
 while radius < .9:
-    # Prep environments
-    featureClassesForDeletion = ["LeftOver", "facCapture", "BufferUnion", "AlpineBuffer", "sumStats", "Sum_Stats1"]
-    for thingVariable in featureClassesForDeletion:
-        arcpy.management.Delete(thingVariable, None)
-
-    fieldDeletion = ["NetSF", "NetSF95Occ"]
-    for field in fieldDeletion:
-        arcpy.management.DeleteField("Alpine", field)
+    resetEnvironment(featureClassesForDeletion, fieldsForDeletion)
 
     # Add a Numeric Field for the facility then use the calculate tool to get a numeric value in the field
     fieldName = ["NetSF", "NetSF95Occ"]
@@ -100,8 +106,6 @@ while radius < .9:
     for rowdemand in cursor:
         demandedsf = (rowdemand.getValue(field))
 
-    if demandedsf>suppliedsf:
-        print ("Yes")
-    else:
-        print("No")
+    isDemandGreaterThanSupply(demandedsf, suppliedsf)
+
     radius += .1
