@@ -54,8 +54,22 @@ resetEnvironment(featureClassesForDeletion, fieldsForDeletion)
 while radius < .9:
     resetEnvironment(featureClassesForDeletion, fieldsForDeletion)
 
-    netSquareFeet = getValueFromCompetitionTable("Net")
-    supply = netSquareFeet
+    # netSquareFeet = getValueFromCompetitionTable("Net")
+
+    fc = "Alpine"
+    field = "Net"
+    cursor = arcpy.SearchCursor(fc)
+
+    # print (cursor)
+
+    for rowsupply in cursor:
+        suppliedsf = (rowsupply.getValue(field))
+
+
+
+
+
+    # supply = netSquareFeet
 
     # the buffer tool
     facility = "Alpine"
@@ -101,7 +115,7 @@ while radius < .9:
     capturedPopField = "!SUM_why_csv_Total_population!"
     arcpy.management.CalculateField(tableToCalc, fieldToCalc, "!SUM_why_csv_Total_population! * 7.93", "PYTHON_9.3", None)
 
-    #**************************************************************
+    #**********************************************`****************
     
     fc = "sumStats"
     field = "SFDemanded"
