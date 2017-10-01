@@ -28,6 +28,7 @@ fieldToSum = "why_csv_Total_population" #is there a way to look this up?  Or sho
 fieldNameToAdd = ["SFDemanded"]
 popToSFMultiplier = 7.93
 fieldToCalc = "SFDemanded"
+competitionFacilities = "SLCoCompetitionFew"
 # VARIABLES
 
 
@@ -104,6 +105,11 @@ def popToSFCalculation (nameOfSumTable, fieldToCalc, popToSFMultiplier):
 
     return;
 
+def numberOfFacilities ():
+
+
+    return;
+
 # FUNCTIONS
 
 
@@ -112,25 +118,30 @@ resetEnvironment(featureClassesForDeletion, fieldsForDeletion)
 netSquareFeet = getValueFromCompetitionTable("USER_Net")
 supply = netSquareFeet
 
-while supplyIsGreaterThanDemand():
-    resetEnvironment(featureClassesForDeletion, fieldsForDeletion)
+# For Loop for factilies
+f = open(competitionFacilities)
+for line in f:
+    while supplyIsGreaterThanDemand():
+        resetEnvironment(featureClassesForDeletion, fieldsForDeletion)
 
-    bufferTool (featureClass, facilityBufferName)
+        bufferTool (featureClass, facilityBufferName)
 
-    unionTool (facilityBufferName, censusTracts, bufferUnion)
+        unionTool (facilityBufferName, censusTracts, bufferUnion)
 
-    splitUnionTool (outPutInsideLayer, outPutOutsideLayer, bufferUnion)
+        splitUnionTool (outPutInsideLayer, outPutOutsideLayer, bufferUnion)
 
-    sumInsideBuffer (outPutInsideLayer, nameOfSumTable, fieldToSum)
+        sumInsideBuffer (outPutInsideLayer, nameOfSumTable, fieldToSum)
 
-    addFieldToSumTable (nameOfSumTable, fieldNameToAdd)
+        addFieldToSumTable (nameOfSumTable, fieldNameToAdd)
 
-    popToSFCalculation (nameOfSumTable, fieldToCalc, popToSFMultiplier)
+        popToSFCalculation (nameOfSumTable, fieldToCalc, popToSFMultiplier)
 
-    fc = nameOfSumTable
-    field = fieldToCalc
-    cursor = arcpy.SearchCursor(fc)
-    for rowdemand in cursor:
-        demand = (rowdemand.getValue(field))
+        fc = nameOfSumTable
+        field = fieldToCalc
+        cursor = arcpy.SearchCursor(fc)
+        for rowdemand in cursor:
+            demand = (rowdemand.getValue(field))
 
-    radius += radiusIncrement
+        radius += radiusIncrement
+
+    f.close(competitionFacilities)
