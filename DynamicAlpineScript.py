@@ -13,6 +13,7 @@ featureClassesForDeletion = ["LeftOver", "facCapture", "BufferUnion", "AlpineBuf
 fieldsForDeletion = ["NetSF", "NetSF95Occ"]
 featureClass = "Alpine"
 radius = .1
+radiusIncrement = .1
 supply = None
 demand = None
 netSquareFeet = None
@@ -26,50 +27,45 @@ def resetEnvironment(featureClassesForDeletion, fieldsForDeletion):
     for featureClass in featureClassesForDeletion:
         arcpy.management.Delete(featureClass, None)
 
-    for field in fieldDeletion:
+    for field in fieldsForDeletion:
         arcpy.management.DeleteField("Alpine", field)
 
-    return;    
-
-def isDemandGreaterThanSupply(demand, supply):
-    print(demand > supply)
-    return demand > supply;
+    return;
 
 def getNetSquareFootageAsFloat(netSqFt):
     return float(netSqFt);
 
 def getValueFromCompetitionTable(field):
-    cursor = arcpy.SearchCursor(featureClass)
+    # for field in arcpy.ListFields("Alpine"):
+    #     print(field.name)
 
-    for rowsupply in cursor:
-        value = float((rowsupply.getValue(field)))
+    with arcpy.da.SearchCursor(featureClass, field) as cursor:
+        for row in cursor:
+            value = float(row[0].replace(",", ""))
 
     return value;
+
+def supplyIsGreaterThanDemand():
+    if demand is None:
+        return True;
+
+    if supply < demand:
+        print("Supply:", supply, ", Demand:", demand, " Found Site!!!")
+    else :
+        print("Supply is larger than demand, increasing radius from:", radius - radiusIncrement, " to:", radius)
+
+    return supply > demand;
+
 # FUNCTIONS
 
 
 resetEnvironment(featureClassesForDeletion, fieldsForDeletion)
 
+netSquareFeet = getValueFromCompetitionTable("USER_Net")
+supply = netSquareFeet
 
-while radius < .9:
+while supplyIsGreaterThanDemand():
     resetEnvironment(featureClassesForDeletion, fieldsForDeletion)
-
-    # netSquareFeet = getValueFromCompetitionTable("Net")
-
-    fc = "Alpine"
-    field = "Net"
-    cursor = arcpy.SearchCursor(fc)
-
-    # print (cursor)
-
-    for rowsupply in cursor:
-        suppliedsf = (rowsupply.getValue(field))
-
-
-
-
-
-    # supply = netSquareFeet
 
     # the buffer tool
     facility = "Alpine"
@@ -116,13 +112,11 @@ while radius < .9:
     arcpy.management.CalculateField(tableToCalc, fieldToCalc, "!SUM_why_csv_Total_population! * 7.93", "PYTHON_9.3", None)
 
     #**********************************************`****************
-    
+
     fc = "sumStats"
     field = "SFDemanded"
     cursor = arcpy.SearchCursor(fc)
     for rowdemand in cursor:
-        demandedsf = (rowdemand.getValue(field))
+        demand = (rowdemand.getValue(field))
 
-    isDemandGreaterThanSupply(demandedsf, supply)
-
-    radius += .1
+    radius += radiusIncrement
