@@ -28,11 +28,11 @@ arcpy.management.CalculateField(facility, "NetSF95Occ", "!NetSF! * .95", "PYTHON
 # the buffer tool
 facility = "Alpine"
 facBufferName = "AlpineBuffer"
-distance = .01
+radius = .01
 
 # Run Buffer using the variables set above and pass the remaining
 # parameters in as strings
-arcpy.Buffer_analysis(facility, facBufferName, distance, "FULL", "ROUND", "NONE")
+arcpy.Buffer_analysis(facility, facBufferName, radius, "FULL", "ROUND", "NONE")
 
 # to take care of weird projections
 # Set the workspace, outputCoordinateSystem and maybe look at geographicTransformations environments if there are still problems
