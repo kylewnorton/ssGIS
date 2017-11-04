@@ -16,21 +16,6 @@ arcpy.env.overwriteOutput = True
     #    print (fields.name)
     #************************************************************
 
-# def buildNamesFromCurrentIndex (i, facility, bufferName, unionName, expressionLO, leftOverLayer, censusNonSplitable, censusSplitable):
-def buildNamesFromCurrentIndex (i):
-    facility = facility + str(i)
-    bufferName = facility + "Buffer"
-    unionName = bufferName + "Union"
-    expressionLO = "FID_facility" + str(i) + "Buffer = -1"
-    leftOverLayer = "SLCoTractsSplitable" + str(i)
-    censusNonSplitable = "SLCoTractsSplitable" + str(i)
-    censusSplitable = "SLCoTractsSplitable" + str(i) + "Again"
-    #outPutInsideLayer + str(i) + "Capture"
-    #facilityBufferName + "- " + nameOfFacility + " " + str(i)
-    #TODO: add rest of strings with indexes for ouput
-
-    return;
-
 def getValueFromCompetitionTable(facility, fieldGrossSF):
     expression = None
     facilityGrossSF = 0
@@ -41,16 +26,16 @@ def getValueFromCompetitionTable(facility, fieldGrossSF):
 
     return facilityGrossSF;
 
-def facilitySupplyIsGreaterThanbufferPopulationDemand():
+def facilitySupplyIsGreaterThanbufferPopulationDemand(bufferPopulationDemand, grossSquareFeet, radius, radiusIncrement):
     if bufferPopulationDemand is None:
         return True;
 
-    if facilitySupply < bufferPopulationDemand:
-        print("facilitySupply:", facilitySupply, ", bufferPopulationDemand:", bufferPopulationDemand, " Equilibrium Found!!!")
+    if grossSquareFeet < bufferPopulationDemand:
+        print("grossSquareFeet:", grossSquareFeet, ", bufferPopulationDemand:", bufferPopulationDemand, " Equilibrium Found!!!")
     else :
-        print("facilitySupply is larger than bufferPopulationDemand, increasing radius from:", radius, " to:", radius + radiusIncrement)
+        print("grossSquareFeet is larger than bufferPopulationDemand, increasing radius from:", radius, " to:", radius + radiusIncrement)
 
-    return facilitySupply > bufferPopulationDemand;
+    return grossSquareFeet > bufferPopulationDemand;
 
 #To make a feature class "Divisible" or "Splitable"
 def splitableTool (censusNonSplitable, censusSplitable):
@@ -77,28 +62,41 @@ def leftOverTool (unionName, leftOverLayer, expressionLO):
 
 
 def performLoop():
+    #VARIABLES
+    i = 1
+    MetroPerCapitaSFMultiplier = 7.93
+    radius = .1
+    radiusIncrement = .2
+    fieldGrossSF = "USER_Gross"
+    bufferPopulationDemand = None
+    grossSquareFeet = None
+    inTable = "SLCComFew"
+    fields = ["OBJECTID", "USER_Name_of_Store", "USER_Gross"]
+    #VARIABLES
+
     with arcpy.da.SearchCursor(inTable, fields) as cursor:
         for row in cursor:
-            #print (i)
-            #buildNamesFromCurrentIndex (i, facility, bufferName, unionName, expressionLO, leftOverLayer, censusNonSplitable, censusSplitable)
-            #facility = "facility" + str(row[0])
-
-
-            # radius = .1
-            print ("Radius is:", radius)
-            print (variables)
+            facility = "facility" + str(i)
+            censusNonSplitable = "SLCoTractsSplitable" + str(i)
+            bufferName = facility + "Buffer"
+            unionName = bufferName + "Union"
+            censusSplitable = "SLCoTractsSplitable" + str(i)+ "Again"
+            unionInputs = [bufferName, censusSplitable]
+            expressionLO = "FID_facility" + str(i) + "Buffer = -1"
+            leftOverLayer = "SLCoTractsSplitable" + str(i)
             bufferPopulationDemand = 0
 
-            buildNamesFromCurrentIndex(i)
+            variables = [facility, censusNonSplitable, bufferName, unionName, censusSplitable, unionInputs, expressionLO, leftOverLayer]
 
+            print("Radius is:", radius)
+            print(variables)
             print('Store {0}, {1}, has Gross SF of {2}'.format(row[0],row[1], row[2]))
             arcpy.management.MakeFeatureLayer(inTable, facility, "OBJECTID = " + str(row[0]))
             
             #splitableTool (censusNonSplitable, censusSplitable)
 
             grossSquareFeet = getValueFromCompetitionTable(facility, fieldGrossSF)
-            facilitySupply = grossSquareFeet
-            while facilitySupplyIsGreaterThanbufferPopulationDemand():
+            while facilitySupplyIsGreaterThanbufferPopulationDemand(bufferPopulationDemand, grossSquareFeet, radius, radiusIncrement):
                 bufferTool (facility, bufferName, radius)
 
                 unionTool (unionInputs, unionName)
@@ -112,12 +110,12 @@ def performLoop():
                 with arcpy.da.SearchCursor(fc, fields, expression) as cursor2:
                     for row2 in cursor2:
                         summedTotal = summedTotal + row2[0]
-                print ('Total Population inside of the Buffer is:', summedTotal)
-                print ('Population of', summedTotal, 'multiplied by Salt Lake Metro Capita Multiplier of', MetroPerCapitaSFMultiplier, '=', summedTotal*MetroPerCapitaSFMultiplier )
+                print('Total Population inside of the Buffer is:', summedTotal)
+                print('Population of', summedTotal, 'multiplied by Salt Lake Metro Capita Multiplier of', MetroPerCapitaSFMultiplier, '=', summedTotal*MetroPerCapitaSFMultiplier )
                 bufferPopulationDemand = (summedTotal*MetroPerCapitaSFMultiplier)
 
                 radius += radiusIncrement
-                print ("Radius is:", radius)
+                print("Radius is:", radius)
             
             #next line only works in IDE or IDLE.  Have to press enter to continue
             leftOverTool (unionName, leftOverLayer, expressionLO)
@@ -129,29 +127,11 @@ def performLoop():
 
 def executeProgram():
     #VARIABLES
-    i = 0
-    MetroPerCapitaSFMultiplier = 7.93
-    censusOriginal = "SLCoTractsSplitable0"
-    censusNonSplitable = "SLCoTractsSplitable" + str(i)
-    censusSplitable = "SLCoTractsSplitable" + str(i) + "Again"
-    facility = "facility"
-    bufferName = facility + "Buffer"
-    unionName = bufferName + "Union"
-    unionInputs = [bufferName, censusSplitable]
-    fieldGrossSF = "USER_Gross"
-    radius = .1
-    radiusIncrement = .2
-    facilitySupply = None
-    bufferPopulationDemand = None
-    grossSquareFeet = None
-    expressionLO = "FID_facilityBuffer = -1"
-    leftOverLayer = "SLCoTractsSplitable" + str(i)
-    inTable = "SLCComFew"
-    fields = ["OBJECTID", "USER_Name_of_Store", "USER_Gross"]
-    variables = [MetroPerCapitaSFMultiplier, censusNonSplitable, censusSplitable, facility, bufferName, unionName, fieldGrossSF, radius, radiusIncrement, facilitySupply, bufferPopulationDemand, grossSquareFeet, expressionLO, leftOverLayer]
-    #VARIABLES
-
-    splitableTool(censusOriginal, censusSplitable)
+    # censusOriginal = "SLCoTractsSplitable0"
+    # censusSplitable = "SLCoTractsSplitable0Again"
+    
+    # splitableTool(censusOriginal, censusSplitable)
+    splitableTool("SLCoTractsSplitable0", "SLCoTractsSplitable0Again")
     performLoop()
 
     return;
