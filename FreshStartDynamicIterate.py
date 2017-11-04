@@ -88,8 +88,11 @@ def performLoop():
             unionName = bufferName + "Union"
             censusSplitable = "SLCoTractsSplitable" + str(i - 1) + "Again"
             unionInputs = [bufferName, censusSplitable]
+            expression = "FID_facility" + str(i) + "Buffer = 1"
             expressionLO = "FID_facility" + str(i) + "Buffer = -1"
             leftOverLayer = "SLCoTractsSplitable" + str(i)
+            fields = ["why_csv_Total_population"]
+           
             bufferPopulationDemand = 0
 
             print("Radius is:", radius)
@@ -105,8 +108,6 @@ def performLoop():
                 unionTool(unionInputs, unionName)
 
                 #Print the Total population inside the buffer
-                fields = ["why_csv_Total_population"]
-                expression = "FID_facilityBuffer = 1"
                 summedTotal = 0
                 with arcpy.da.SearchCursor(unionName, fields, expression) as cursor2:
                     for row2 in cursor2:
