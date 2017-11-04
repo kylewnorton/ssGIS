@@ -8,29 +8,6 @@ env.workspace = r"C:\Users\Kyle\Desktop\SS GIS-Zoning-Competition\SS GIS-Zoning-
 arcpy.env.outputCoordinateSystem = arcpy.SpatialReference("NAD 1983 UTM Zone 12N")
 arcpy.env.overwriteOutput = True
 
-#VARIABLES
-i = 0
-MetroPerCapitaSFMultiplier = 7.93
-censusOriginal = "SLCoTractsSplitable0"
-censusNonSplitable = "SLCoTractsSplitable" + str(i)
-censusSplitable = "SLCoTractsSplitable" + str(i) + "Again"
-facility = "facility"
-bufferName = facility + "Buffer"
-unionName = bufferName + "Union"
-unionInputs = [bufferName, censusSplitable]
-fieldGrossSF = "USER_Gross"
-radius = .1
-radiusIncrement = .2
-facilitySupply = None
-bufferPopulationDemand = None
-grossSquareFeet = None
-expressionLO = "FID_facilityBuffer = -1"
-leftOverLayer = "SLCoTractsSplitable" + str(i)
-inTable = "SLCComFew"
-fields = ["OBJECTID", "USER_Name_of_Store", "USER_Gross"]
-variables = [MetroPerCapitaSFMultiplier, censusNonSplitable, censusSplitable, facility, bufferName, unionName, fieldGrossSF, radius, radiusIncrement, facilitySupply, bufferPopulationDemand, grossSquareFeet, expressionLO, leftOverLayer]
-#VARIABLES
-
 # FUNCTIONS
 #Retrieve the Square Footage supplied for the Facility
  #The following gives a list of fields to pick from:**********
@@ -112,30 +89,33 @@ with arcpy.da.SearchCursor(inTable, fields) as cursor:
     for row in cursor:
         #print (i)
         #buildNamesFromCurrentIndex (i, facility, bufferName, unionName, expressionLO, leftOverLayer, censusNonSplitable, censusSplitable)
-        facility = "facility" + str(row[0])
+        #facility = "facility" + str(row[0])
 
 
 
 
-        # censusNonSplitable = "SLCoTractsSplitable" + str(row[0])
-        # censusSplitable = "SLCoTractsSplitable" + str(row[0]) + "Again"
-        # facility = "facility"
-        # bufferName = facility + "Buffer"
-        # unionName = bufferName + "Union"
-        # unionInputs = [bufferName, censusSplitable]
-        # fieldGrossSF = "USER_Gross"
-        # radius = .1
-        # radiusIncrement = .2
-        # facilitySupply = None
-        # bufferPopulationDemand = None
-        # grossSquareFeet = None
-        # expressionLO = "FID_facility" + str(row[0]) + "Buffer = -1"
-        # leftOverLayer = "SLCoTractsSplitable" + str(row[0])
-        # inTable = "SLCComFew"
-        # fields = ["OBJECTID", "USER_Name_of_Store", "USER_Gross"]
-        # variables = [MetroPerCapitaSFMultiplier, censusNonSplitable, censusSplitable, facility, bufferName, unionName, fieldGrossSF, radius, radiusIncrement, facilitySupply, bufferPopulationDemand, grossSquareFeet, expressionLO, leftOverLayer]
-        
-
+        #VARIABLES
+        i = 0
+        MetroPerCapitaSFMultiplier = 7.93
+        censusOriginal = "SLCoTractsSplitable0"
+        censusNonSplitable = "SLCoTractsSplitable" + str(i)
+        censusSplitable = "SLCoTractsSplitable" + str(i) + "Again"
+        facility = "facility"
+        bufferName = facility + "Buffer"
+        unionName = bufferName + "Union"
+        unionInputs = [bufferName, censusSplitable]
+        fieldGrossSF = "USER_Gross"
+        radius = .1
+        radiusIncrement = .2
+        facilitySupply = None
+        bufferPopulationDemand = None
+        grossSquareFeet = None
+        expressionLO = "FID_facilityBuffer = -1"
+        leftOverLayer = "SLCoTractsSplitable" + str(i)
+        inTable = "SLCComFew"
+        fields = ["OBJECTID", "USER_Name_of_Store", "USER_Gross"]
+        variables = [MetroPerCapitaSFMultiplier, censusNonSplitable, censusSplitable, facility, bufferName, unionName, fieldGrossSF, radius, radiusIncrement, facilitySupply, bufferPopulationDemand, grossSquareFeet, expressionLO, leftOverLayer]
+        #VARIABLES
 
 
         # radius = .1
