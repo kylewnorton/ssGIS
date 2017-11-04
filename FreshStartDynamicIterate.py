@@ -87,6 +87,7 @@ def performLoop():
             bufferName = facility + "Buffer"
             unionName = bufferName + "Union"
             censusSplitable = "SLCoTractsSplitable" + str(i - 1) + "Again"
+            censusSplitableOutput = "SLCoTractsSplitable" + str(i) + "Again"
             unionInputs = [bufferName, censusSplitable]
             expression = "FID_facility" + str(i) + "Buffer = 1"
             expressionLO = "FID_facility" + str(i) + "Buffer = -1"
@@ -95,6 +96,7 @@ def performLoop():
            
             bufferPopulationDemand = 0
 
+            print("Iteration:", i)
             print("Radius is:", radius)
             print('Store {0}, {1}, has Gross SF of {2}'.format(row[0],row[1], row[2]))
             arcpy.management.MakeFeatureLayer(inTable, facility, "OBJECTID = " + str(row[0]))
@@ -120,8 +122,8 @@ def performLoop():
                 print("Radius is:", radius)
             
             #next line only works in IDE or IDLE.  Have to press enter to continue
-            leftOverTool (unionName, leftOverLayer, expressionLO)
-            splitableTool (censusNonSplitable, censusSplitable)
+            leftOverTool(unionName, leftOverLayer, expressionLO)
+            splitableTool(censusNonSplitable, censusSplitableOutput)
             input()
             i += 1
     return;
