@@ -86,7 +86,7 @@ def performLoop():
             censusNonSplitable = "SLCoTractsSplitable" + str(i)
             bufferName = facility + "Buffer"
             unionName = bufferName + "Union"
-            censusSplitable = "SLCoTractsSplitable" + str(i)+ "Again"
+            censusSplitable = "SLCoTractsSplitable" + str(i - 1) + "Again"
             unionInputs = [bufferName, censusSplitable]
             expressionLO = "FID_facility" + str(i) + "Buffer = -1"
             leftOverLayer = "SLCoTractsSplitable" + str(i)
@@ -100,9 +100,9 @@ def performLoop():
 
             grossSquareFeet = getValueFromCompetitionTable(facility, fieldGrossSF)
             while facilitySupplyIsGreaterThanbufferPopulationDemand(bufferPopulationDemand, grossSquareFeet, radius, radiusIncrement):
-                bufferTool (facility, bufferName, radius)
+                bufferTool(facility, bufferName, radius)
 
-                unionTool (unionInputs, unionName)
+                unionTool(unionInputs, unionName)
 
                 #Print the Total population inside the buffer
                 #fc = "facility" + str(row[0]) + "BufferUnion"
@@ -129,11 +129,6 @@ def performLoop():
 
 
 def executeProgram():
-    #VARIABLES
-    # censusOriginal = "SLCoTractsSplitable0"
-    # censusSplitable = "SLCoTractsSplitable0Again"
-    
-    # splitableTool(censusOriginal, censusSplitable)
     splitableTool("SLCoTractsSplitable0", "SLCoTractsSplitable0Again")
     performLoop()
 
