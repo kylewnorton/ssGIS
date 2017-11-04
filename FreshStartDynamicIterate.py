@@ -15,7 +15,7 @@ censusOriginal = "SLCoTractsSplitable0"
 censusNonSplitable = "SLCoTractsSplitable" + str(i)
 censusSplitable = "SLCoTractsSplitable" + str(i) + "Again"
 facility = "facility"
-bufferName = facility + "BufferTest"
+bufferName = facility + "Buffer"
 unionName = bufferName + "Union"
 unionInputs = [bufferName, censusSplitable]
 fieldGrossSF = "USER_Gross"
@@ -24,7 +24,7 @@ radiusIncrement = .2
 facilitySupply = None
 bufferPopulationDemand = None
 grossSquareFeet = None
-expressionLO = "FID_facilityBufferTest = -1"
+expressionLO = "FID_facilityBuffer = -1"
 leftOverLayer = "SLCoTractsSplitable" + str(i)
 inTable = "SLCComFew"
 fields = ["OBJECTID", "USER_Name_of_Store", "USER_Gross"]
@@ -39,11 +39,12 @@ variables = [MetroPerCapitaSFMultiplier, censusNonSplitable, censusSplitable, fa
     #    print (fields.name)
     #************************************************************
 
-def buildNamesFromCurrentIndex (i, facility, bufferName, unionName, expressionLO, leftOverLayer, censusNonSplitable, censusSplitable):
+# def buildNamesFromCurrentIndex (i, facility, bufferName, unionName, expressionLO, leftOverLayer, censusNonSplitable, censusSplitable):
+def buildNamesFromCurrentIndex (i):
     facility = facility + str(i)
-    bufferName = facility + "BufferTest"
+    bufferName = facility + "Buffer"
     unionName = bufferName + "Union"
-    expressionLO = "FID_facility" + str(i) + "BufferTest = -1"
+    expressionLO = "FID_facility" + str(i) + "Buffer = -1"
     leftOverLayer = "SLCoTractsSplitable" + str(i)
     censusNonSplitable = "SLCoTractsSplitable" + str(i)
     censusSplitable = "SLCoTractsSplitable" + str(i) + "Again"
@@ -113,30 +114,36 @@ with arcpy.da.SearchCursor(inTable, fields) as cursor:
         #buildNamesFromCurrentIndex (i, facility, bufferName, unionName, expressionLO, leftOverLayer, censusNonSplitable, censusSplitable)
         facility = "facility" + str(row[0])
 
-        censusNonSplitable = "SLCoTractsSplitable" + str(row[0])
-        censusSplitable = "SLCoTractsSplitable" + str(row[0]) + "Again"
-        facility = "facility"
-        bufferName = facility + "BufferTest"
-        unionName = bufferName + "Union"
-        unionInputs = [bufferName, censusSplitable]
-        fieldGrossSF = "USER_Gross"
-        radius = .1
-        radiusIncrement = .2
-        facilitySupply = None
-        bufferPopulationDemand = None
-        grossSquareFeet = None
-        expressionLO = "FID_facility" + str(row[0]) + "BufferTest = -1"
-        leftOverLayer = "SLCoTractsSplitable" + str(row[0])
-        inTable = "SLCComFew"
-        fields = ["OBJECTID", "USER_Name_of_Store", "USER_Gross"]
-        variables = [MetroPerCapitaSFMultiplier, censusNonSplitable, censusSplitable, facility, bufferName, unionName, fieldGrossSF, radius, radiusIncrement, facilitySupply, bufferPopulationDemand, grossSquareFeet, expressionLO, leftOverLayer]
+
+
+
+        # censusNonSplitable = "SLCoTractsSplitable" + str(row[0])
+        # censusSplitable = "SLCoTractsSplitable" + str(row[0]) + "Again"
+        # facility = "facility"
+        # bufferName = facility + "Buffer"
+        # unionName = bufferName + "Union"
+        # unionInputs = [bufferName, censusSplitable]
+        # fieldGrossSF = "USER_Gross"
+        # radius = .1
+        # radiusIncrement = .2
+        # facilitySupply = None
+        # bufferPopulationDemand = None
+        # grossSquareFeet = None
+        # expressionLO = "FID_facility" + str(row[0]) + "Buffer = -1"
+        # leftOverLayer = "SLCoTractsSplitable" + str(row[0])
+        # inTable = "SLCComFew"
+        # fields = ["OBJECTID", "USER_Name_of_Store", "USER_Gross"]
+        # variables = [MetroPerCapitaSFMultiplier, censusNonSplitable, censusSplitable, facility, bufferName, unionName, fieldGrossSF, radius, radiusIncrement, facilitySupply, bufferPopulationDemand, grossSquareFeet, expressionLO, leftOverLayer]
         
-        radius = .1
+
+
+
+        # radius = .1
         print ("Radius is:", radius)
         print (variables)
         bufferPopulationDemand = 0
 
-        buildNamesFromCurrentIndex (i, facility, bufferName, unionName, expressionLO, leftOverLayer, censusNonSplitable, censusSplitable)
+        buildNamesFromCurrentIndex(i)
 
         print('Store {0}, {1}, has Gross SF of {2}'.format(row[0],row[1], row[2]))
         arcpy.management.MakeFeatureLayer(inTable, facility, "OBJECTID = " + str(row[0]))
@@ -154,7 +161,7 @@ with arcpy.da.SearchCursor(inTable, fields) as cursor:
             #fc = "facility" + str(row[0]) + "BufferUnion"
             fc = unionName
             fields = ["why_csv_Total_population"]
-            expression = "FID_facilityBufferTest = 1"
+            expression = "FID_facilityBuffer = 1"
             summedTotal = 0
             with arcpy.da.SearchCursor(fc, fields, expression) as cursor2:
                 for row2 in cursor2:
