@@ -105,12 +105,10 @@ def performLoop():
                 unionTool(unionInputs, unionName)
 
                 #Print the Total population inside the buffer
-                #fc = "facility" + str(row[0]) + "BufferUnion"
-                fc = unionName
                 fields = ["why_csv_Total_population"]
                 expression = "FID_facilityBuffer = 1"
                 summedTotal = 0
-                with arcpy.da.SearchCursor(fc, fields, expression) as cursor2:
+                with arcpy.da.SearchCursor(unionName, fields, expression) as cursor2:
                     for row2 in cursor2:
                         summedTotal = summedTotal + row2[0]
                 print('Total Population inside of the Buffer is:', summedTotal)
@@ -133,9 +131,7 @@ def executeProgram():
     performLoop()
 
     return;
-            
+         
 #FUNCTIONS
 
-
-#SCRIPT
 executeProgram()
