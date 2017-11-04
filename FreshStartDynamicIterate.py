@@ -94,6 +94,7 @@ def performLoop():
             leftOverLayer = "SLCoTractsSplitable" + str(i)
             fields = ["why_csv_Total_population"]
            
+            radius = .1
             bufferPopulationDemand = 0
 
             print("Iteration:", i)
