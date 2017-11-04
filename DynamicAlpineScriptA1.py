@@ -2,29 +2,26 @@ import arcpy
 from arcpy import env
 
 # set the workspace so the path doesn't get so long and cause the buffer tool to not work
-# env.workspace = "C:/desktop/SS GIS-Zoning-Competition"
-# env.workspace = r"C:\Users\Kyle\Desktop\Temp\newTest\newTest.gdb"
-# env.workspace = r"C:\Users\Kyle\Desktop\SS GIS-Zoning-Competition\SS GIS-Zoning-Competition\Utah\Salt Lake County\Alpine AntiMatter Test\New Alpine AntiMatter Test.gdb"
-env.workspace = r"C:\Users\Kyle\Desktop\Alpine AntiMatter Test\New Alpine AntiMatter Test.gdb"
+env.workspace = "C:/desktop/SS GIS-Zoning-Competition"
 
 # to take care of weird projections
 # Set the workspace, outputCoordinateSystem and maybe look at geographicTransformations environments if there are still problems
 arcpy.env.outputCoordinateSystem = arcpy.SpatialReference("NAD 1983 UTM Zone 12N")
 
 # VARIABLES
-featureClassesForDeletion = ["LeftOver", "facCapture", "BufferUnion", "AlpineBuffer", "sumStats", "Buffer"]
+featureClassesForDeletion = ["LeftOverA1", "facCapture", "BufferUnion", "A1Buffer", "sumStats", "Buffer"]
 fieldsForDeletion = ["NetSF", "NetSF95Occ"]
-featureClass = r"C:\Users\Kyle\Desktop\Alpine AntiMatter Test\New Alpine AntiMatter Test.gdb\Alpine"
+featureClass = "A1"
 radius = .1
 radiusIncrement = .4
 supply = None
 demand = None
 netSquareFeet = None
 facilityBufferName = featureClass + "Buffer"
-censusTracts = r"C:\Users\Kyle\Desktop\Alpine AntiMatter Test\New Alpine AntiMatter Test.gdb\SLCoTractsDiv"
-bufferUnion = r"C:\Users\Kyle\Desktop\Alpine AntiMatter Test\New Alpine AntiMatter Test.gdb\BufferUnion"
+censusTracts = "tractsClip"
+bufferUnion = "BufferUnion"
 outPutInsideLayer = "facCapture"
-outPutOutsideLayer = "LeftOver"
+outPutOutsideLayer = "LeftOverA1"
 nameOfSumTable = "sumStats"
 fieldToSum = "why_csv_Total_population" #is there a way to look this up?  Or should I have more code to get ready for this?
 # could have python look up the table?
@@ -32,6 +29,7 @@ fieldNameToAdd = ["SFDemanded"]
 popToSFMultiplier = 7.93
 fieldToCalc = "SFDemanded"
 # VARIABLES
+
 
 # FUNCTIONS
 
@@ -41,14 +39,14 @@ def resetEnvironment(featureClassesForDeletion, fieldsForDeletion):
         arcpy.management.Delete(featureClass, None)
 
     for field in fieldsForDeletion:
-        arcpy.management.DeleteField("Alpine", #field)
+        arcpy.management.DeleteField("Alpine", field)
 
     return;
 
 def getNetSquareFootageAsFloat(netSqFt):
     return float(netSqFt);
 
-def getValueFromCompetitionTable(#field):
+def getValueFromCompetitionTable(field):
     # for field in arcpy.ListFields("Alpine"):
     #     print(field.name)
 
@@ -76,9 +74,7 @@ def bufferTool (featureClass, facilityBufferName):
 
 def unionTool (facilityBufferName, censusTracts, bufferUnion):
     inFeatures = [facilityBufferName, censusTracts]
-    arcpy.Union_analysis (inFeatures, bufferUnion, "All", None, "Gaps")
-
-# arcpy.analysis.Union("AlpineBuffer #;SLCoTractsDiv #", r"C:\Users\Kyle\Desktop\SS GIS-Zoning-Competition\SS GIS-Zoning-Competition\Utah\Salt Lake County\Alpine AntiMatter Test\New Alpine AntiMatter Test.gdb\BufferUnion", "ALL", None, "GAPS")
+    arcpy.Union_analysis (inFeatures, bufferUnion)
 
     return;
 

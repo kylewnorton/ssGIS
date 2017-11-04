@@ -1,33 +1,26 @@
 import arcpy
 from arcpy import env
 
-# set the workspace so the path doesn't get so long and cause the buffer tool to not work
-# env.workspace = "C:/desktop/SS GIS-Zoning-Competition"
-# env.workspace = r"C:\Users\Kyle\Desktop\Temp\newTest\newTest.gdb"
-# env.workspace = r"C:\Users\Kyle\Desktop\SS GIS-Zoning-Competition\SS GIS-Zoning-Competition\Utah\Salt Lake County\Alpine AntiMatter Test\New Alpine AntiMatter Test.gdb"
 env.workspace = r"C:\Users\Kyle\Desktop\Alpine AntiMatter Test\New Alpine AntiMatter Test.gdb"
 
-# to take care of weird projections
-# Set the workspace, outputCoordinateSystem and maybe look at geographicTransformations environments if there are still problems
 arcpy.env.outputCoordinateSystem = arcpy.SpatialReference("NAD 1983 UTM Zone 12N")
 
 # VARIABLES
 featureClassesForDeletion = ["LeftOver", "facCapture", "BufferUnion", "AlpineBuffer", "sumStats", "Buffer"]
 fieldsForDeletion = ["NetSF", "NetSF95Occ"]
 featureClass = r"C:\Users\Kyle\Desktop\Alpine AntiMatter Test\New Alpine AntiMatter Test.gdb\Alpine"
-radius = .1
+radius = 1.0
 radiusIncrement = .4
 supply = None
 demand = None
 netSquareFeet = None
 facilityBufferName = featureClass + "Buffer"
-censusTracts = r"C:\Users\Kyle\Desktop\Alpine AntiMatter Test\New Alpine AntiMatter Test.gdb\SLCoTractsDiv"
+censusTracts = r"C:\Users\Kyle\Desktop\Alpine AntiMatter Test\New Alpine AntiMatter Test.gdb\SLCoTractsSplitable1"
 bufferUnion = r"C:\Users\Kyle\Desktop\Alpine AntiMatter Test\New Alpine AntiMatter Test.gdb\BufferUnion"
 outPutInsideLayer = "facCapture"
 outPutOutsideLayer = "LeftOver"
 nameOfSumTable = "sumStats"
-fieldToSum = "why_csv_Total_population" #is there a way to look this up?  Or should I have more code to get ready for this?
-# could have python look up the table?
+fieldToSum = "why_csv_Total_population"
 fieldNameToAdd = ["SFDemanded"]
 popToSFMultiplier = 7.93
 fieldToCalc = "SFDemanded"
@@ -35,20 +28,19 @@ fieldToCalc = "SFDemanded"
 
 # FUNCTIONS
 
-# Reset environment
 def resetEnvironment(featureClassesForDeletion, fieldsForDeletion):
     for featureClass in featureClassesForDeletion:
         arcpy.management.Delete(featureClass, None)
 
-    for field in fieldsForDeletion:
-        arcpy.management.DeleteField("Alpine", #field)
+    for fieldsForDel in fieldsForDeletion:
+        arcpy.management.DeleteField("Alpine", fieldsForDel)
 
     return;
 
 def getNetSquareFootageAsFloat(netSqFt):
     return float(netSqFt);
 
-def getValueFromCompetitionTable(#field):
+def getValueFromCompetitionTable(field):
     # for field in arcpy.ListFields("Alpine"):
     #     print(field.name)
 
@@ -78,17 +70,14 @@ def unionTool (facilityBufferName, censusTracts, bufferUnion):
     inFeatures = [facilityBufferName, censusTracts]
     arcpy.Union_analysis (inFeatures, bufferUnion, "All", None, "Gaps")
 
-# arcpy.analysis.Union("AlpineBuffer #;SLCoTractsDiv #", r"C:\Users\Kyle\Desktop\SS GIS-Zoning-Competition\SS GIS-Zoning-Competition\Utah\Salt Lake County\Alpine AntiMatter Test\New Alpine AntiMatter Test.gdb\BufferUnion", "ALL", None, "GAPS")
-
     return;
 
 def splitUnionTool (outPutInsideLayer, outPutOutsideLayer, bufferUnion):
-    arcpy.MakeFeatureLayer_management (bufferUnion, outPutInsideLayer, "FID_AlpineBuffer = 1") #I think I could use a dictionary here
-    arcpy.MakeFeatureLayer_management (bufferUnion, outPutOutsideLayer, "FID_AlpineBuffer = -1") #I think I could use a dictionary here
+    arcpy.MakeFeatureLayer_management (bufferUnion, outPutInsideLayer, "FID_AlpineBuffer = 1")
+    arcpy.MakeFeatureLayer_management (bufferUnion, outPutOutsideLayer, "FID_AlpineBuffer = -1")
 
     return;
 
-# I think I can substitute this with a PYTHON statement
 def sumInsideBuffer (outPutInsideLayer, nameOfSumTable, fieldToSum):
     arcpy.Statistics_analysis(outPutInsideLayer, nameOfSumTable, [[fieldToSum, "SUM"]])
 
@@ -113,6 +102,7 @@ def popToSFCalculation (nameOfSumTable, fieldToCalc, popToSFMultiplier):
 # FUNCTIONS
 
 
+# SCRIPT
 resetEnvironment(featureClassesForDeletion, fieldsForDeletion)
 
 netSquareFeet = getValueFromCompetitionTable("USER_Net")
@@ -140,3 +130,4 @@ while supplyIsGreaterThanDemand():
         demand = (rowdemand.getValue(field))
 
     radius += radiusIncrement
+

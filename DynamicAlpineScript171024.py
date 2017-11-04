@@ -21,7 +21,7 @@ supply = None
 demand = None
 netSquareFeet = None
 facilityBufferName = featureClass + "Buffer"
-censusTracts = r"C:\Users\Kyle\Desktop\Alpine AntiMatter Test\New Alpine AntiMatter Test.gdb\SLCoTractsDiv"
+censusTracts = r"C:\Users\Kyle\Desktop\Alpine AntiMatter Test\New Alpine AntiMatter Test.gdb\SLCoTracts"
 bufferUnion = r"C:\Users\Kyle\Desktop\Alpine AntiMatter Test\New Alpine AntiMatter Test.gdb\BufferUnion"
 outPutInsideLayer = "facCapture"
 outPutOutsideLayer = "LeftOver"
@@ -41,14 +41,14 @@ def resetEnvironment(featureClassesForDeletion, fieldsForDeletion):
         arcpy.management.Delete(featureClass, None)
 
     for field in fieldsForDeletion:
-        arcpy.management.DeleteField("Alpine", #field)
+        arcpy.management.DeleteField("Alpine", field)
 
     return;
 
 def getNetSquareFootageAsFloat(netSqFt):
     return float(netSqFt);
 
-def getValueFromCompetitionTable(#field):
+def getValueFromCompetitionTable(field):
     # for field in arcpy.ListFields("Alpine"):
     #     print(field.name)
 

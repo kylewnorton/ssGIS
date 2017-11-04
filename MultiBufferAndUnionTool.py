@@ -3,19 +3,20 @@
 import arcpy
 
 # delete old features so you get a blank slate to work with
-for featuretodelete in ["ToysRus1", "ToysRus2", "ToysRus3", "SumStats1", "SumStats2", "SumStats3", "BufferUnion1", "BufferUnion2", "BufferUnion3", "F1Capture1", "F1Capture2", "F1Capture3", "LeftOver1", "LeftOver2", "LeftOver3", "FacilityCapture1M", "FacilityCapture2M", "FacilityCapture3M"]:
+for featuretodelete in ["sandyPossible1", "sandyPossible2", "sandyPossible3", "SumStats1", "SumStats2", "SumStats3", "BufferUnion1", "BufferUnion2", "BufferUnion3", "F1Capture1", "F1Capture2", "F1Capture3", "LeftOver1", "LeftOver2", "LeftOver3", "FacilityCapture1M", "FacilityCapture2M", "FacilityCapture3M"]:
     arcpy.management.Delete(featuretodelete, None)
 
 # set the environment so the path does not need to be typed for every feature class
 from arcpy import env
-env.workspace = r"C:\GISData\Utah\Salt Lake County\Alpine AntiMatter Test\New Alpine AntiMatter Test.gdb"
+env.workspace = r"C:\Users\Kyle\Desktop\SS GIS-Zoning-Competition\Utah\Salt Lake County\Alpine AntiMatter Test\New Alpine AntiMatter Test.gdb"
+arcpy.env.overwriteOutput = True
 
 # Make a layer tool uses the field info tool to get ratios for splitting demographics#
-site = "ToysRus"
+site = "sandyPossible"
 tracts = "SLCoTractsDiv"
 
 #Union Tool - Combine the Buffer Outputs with the Census Tracts
-radiusList = ["1", "2", "3"]
+radiusList = ["3", "2", "1"]
 inFeatures = [site, tracts]
 
 for radiusListIndex in radiusList:

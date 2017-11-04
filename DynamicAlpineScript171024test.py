@@ -40,15 +40,15 @@ def resetEnvironment(featureClassesForDeletion, fieldsForDeletion):
     for featureClass in featureClassesForDeletion:
         arcpy.management.Delete(featureClass, None)
 
-    for field in fieldsForDeletion:
-        arcpy.management.DeleteField("Alpine", #field)
+    for fieldsForDel in fieldsForDeletion:
+        arcpy.management.DeleteField("Alpine", fieldsForDel)
 
     return;
 
 def getNetSquareFootageAsFloat(netSqFt):
     return float(netSqFt);
 
-def getValueFromCompetitionTable(#field):
+def getValueFromCompetitionTable(field):
     # for field in arcpy.ListFields("Alpine"):
     #     print(field.name)
 

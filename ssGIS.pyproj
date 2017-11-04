@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{568fb871-e8ad-4d55-872a-1adaec0d939e}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>addToSumTable.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="addToSumTable.py" />
+    <Compile Include="AlpineScriptDallasHelped.py" />
+    <Compile Include="citySSZoningLookUpTable.py" />
+    <Compile Include="cleanup.py" />
+    <Compile Include="dictionaryAttempt.py" />
+    <Compile Include="DynamicAlpineScript.py" />
+    <Compile Include="DynamicAlpineScriptA1.py" />
+    <Compile Include="environmentPrep.py" />
+    <Compile Include="forLoopPractice.py" />
+    <Compile Include="makeFeatureDivisibleTool.py" />
+    <Compile Include="MasterScript.py" />
+    <Compile Include="MultiBufferAndUnionTool.py" />
+    <Compile Include="newCensusTractTool.py" />
+    <Compile Include="SelectByAttribute.py" />
+    <Compile Include="SelectByAttributeSQL.py" />
+    <Compile Include="summaryScript.py" />
+    <Compile Include="supplyVsDemandScript.py" />
+    <Compile Include="tableUpdate.py" />
+    <Compile Include="test.py" />
+    <Compile Include="TestThisMoFo.py" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+</Project>
