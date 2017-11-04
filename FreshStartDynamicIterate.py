@@ -3,10 +3,12 @@
 #set up new work environment
 import arcpy
 from arcpy import env
+import os
 env.workspace = r"C:\Users\Kyle\Desktop\SS GIS-Zoning-Competition\SS GIS-Zoning-Competition\Projects\dynamicIterate\dynamicIterate.gdb"
 
 arcpy.env.outputCoordinateSystem = arcpy.SpatialReference("NAD 1983 UTM Zone 12N")
 arcpy.env.overwriteOutput = True
+clear = lambda: os.system('cls')
 
 # FUNCTIONS
 #Retrieve the Square Footage supplied for the Facility
@@ -61,6 +63,9 @@ def leftOverTool (unionName, leftOverLayer, expressionLO):
     return;
 
 
+def clearConsole():
+    clear()
+
 def performLoop():
     #VARIABLES
     i = 1
@@ -76,6 +81,7 @@ def performLoop():
 
     with arcpy.da.SearchCursor(inTable, fields) as cursor:
         for row in cursor:
+            clearConsole()
             facility = "facility" + str(i)
             censusNonSplitable = "SLCoTractsSplitable" + str(i)
             bufferName = facility + "Buffer"
@@ -86,10 +92,7 @@ def performLoop():
             leftOverLayer = "SLCoTractsSplitable" + str(i)
             bufferPopulationDemand = 0
 
-            variables = [facility, censusNonSplitable, bufferName, unionName, censusSplitable, unionInputs, expressionLO, leftOverLayer]
-
             print("Radius is:", radius)
-            print(variables)
             print('Store {0}, {1}, has Gross SF of {2}'.format(row[0],row[1], row[2]))
             arcpy.management.MakeFeatureLayer(inTable, facility, "OBJECTID = " + str(row[0]))
             
