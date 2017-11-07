@@ -23,8 +23,8 @@ def getValueFromCompetitionTable(facility, fieldGrossSF):
     facilityGrossSF = 0
     with arcpy.da.SearchCursor(facility, fieldGrossSF, expression) as cursor:
         for row in cursor:
-            facilityGrossSF = float(row[0].replace(",", ""))
-    print (facility, 'has a Gross Square Footage of:', facilityGrossSF)
+            facilityGrossSF = row[0]
+    #print (facility, 'has a Gross Square Footage of:', facilityGrossSF)
 
     return facilityGrossSF;
 
@@ -71,16 +71,19 @@ def performLoop():
     i = 1
     MetroPerCapitaSFMultiplier = 7.93
     radius = .1
-    radiusIncrement = .02
-    fieldGrossSF = "USER_Gross"
+    radiusIncrement = .05
+    fieldGrossSF = "grossSF"
     bufferPopulationDemand = None
     grossSquareFeet = None
-    inTable = "SLCoCompetition_GeocodeAddre"
-    fields = ["OBJECTID", "USER_Name_of_Store", "USER_Gross"]
+    inTable = "SLCComFew"
+    fields = ["grossSF", "OBJECTID", "USER_Name_of_Store"]
     #VARIABLES
 
+    arcpy.management.AddField("SLCComFew", "grossSF", "DOUBLE", None, None, None, None, "NULLABLE", "NON_REQUIRED", None)
+    arcpy.management.CalculateField("SLCComFew", "grossSF", "!USER_Gross!", "PYTHON_9.3", None)
+
     with arcpy.da.SearchCursor(inTable, fields) as cursor:
-        for row in cursor:
+        for row in sorted(cursor):
             clearConsole()
             facility = "facility" + str(i)
             censusNonSplitable = "SLCoTractsSplitable" + str(i)
@@ -99,8 +102,8 @@ def performLoop():
 
             print("Iteration:", i)
             print("Radius is:", radius)
-            print('Store {0}, {1}, has Gross SF of {2}'.format(row[0],row[1], row[2]))
-            arcpy.management.MakeFeatureLayer(inTable, facility, "OBJECTID = " + str(row[0]))
+            print('{0} Gross Square Feet in Facility {1} - {2}'.format(row[0],row[1], row[2]))
+            arcpy.management.MakeFeatureLayer(inTable, facility, "OBJECTID = " + str(row[1]))
             
             #splitableTool (censusNonSplitable, censusSplitable)
 
@@ -125,7 +128,7 @@ def performLoop():
             
             leftOverTool(unionName, leftOverLayer, expressionLO)
             splitableTool(censusNonSplitable, censusSplitableOutput)
-            #next 2 lines only works in IDE or IDLE.  Have to press enter to continue
+            #next 2 lines only works in IDE or IDLE.
             #print("press enter to continue...")
             #input()
             i += 1
@@ -139,5 +142,12 @@ def executeProgram():
     return;
          
 #FUNCTIONS
+
+#inTable = "SLCComFew"
+## inField = ["USER_Net"]
+#with arcpy.da.SearchCursor(inTable, ["grossSF", "USER_Name_of_Store"]) as cursor:
+#    for row in sorted(cursor):
+#        print('{0} Gross Square Feet in factility - {1}'.format(row[0], row[1]))
+
 
 executeProgram()
