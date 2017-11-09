@@ -134,15 +134,103 @@ with arcpy.da.SearchCursor(inTable, ["USER_Name_of_Store", "USER_Net"]) as curso
         print('Store {0} has net SF of {1}'.format(row[0], row[1]))
 #*********************why I can't get it to do anything else is beyond me.
 
-
-
-
-
-
-
-
-
 # everything below this sucks!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+
+
+
+import arcpy
+for field in arcpy.ListFields("SLCoTractsSplitable43"):
+    print(field.name)
+
+
+
+fieldsForDeletion = ["Loc_name_*", "Status_*", "Score_*", "Match_type_*", "Match_addr_*", "LongLabel_*", "ShortLabel_*", "Addr_type_*", "Place_addr_*", "Rank_*", "AddNum_*", "AddNumFrom_*", "AddNumTo_*", "AddRange_*", "Side_*", "StPreDir_*", "StName_*", "StType_*", "StDir_*", "StAddr_*", "City_*", "Subregion_*", "Region_*", "RegionAbbr_*", "Postal_*", "Country_*", "LangCode_*", "Distance_*", "X_*", "Y_*", "DisplayX_*", "DisplayY_*", "Xmin_*", "Xmax_*", "Ymin_*", "Ymax_*", "ExInfo_*", "IN_Address_*", "IN_City_*", "IN_Postal_*", "USER_Object_ID_*", "USER_Name_of_Store_*", "USER_Street_*", "USER_City_*", "USER_St_*", "USER_Zip_*", "USER_Gross_*", "USER_Net_*", "USER_Notes_*", "USER_Developer_*", "USER_Status_*", "USER_Units_*", "USER_Date_Entered_*", "USER_*", "0x*", "0_climate_*", "USER_*", "0x*", "0_non_climate_*", "USER_Lattitude_*", "USER_Longitude_*", "USER_Field*", "9_*", "BUFF_DIST_*", "ORIG_FID_*"]
+
+for field in fieldsForDeletion:
+    arcpy.management.DeleteField("SLCoTractsSplitable43", field)
+
+
+
+
+Loc_name_1
+Status_1
+Score_1
+Match_type_1
+Match_addr_1
+LongLabel_1
+ShortLabel_1
+Addr_type_1
+Place_addr_1
+Rank_1
+AddNum_1
+AddNumFrom_1
+AddNumTo_1
+AddRange_1
+Side_1
+StPreDir_1
+StName_1
+StType_1
+StDir_1
+StAddr_1
+City_1
+Subregion_1
+Region_1
+RegionAbbr_1
+Postal_1
+Country_1
+LangCode_1
+Distance_1
+X_1
+Y_1
+DisplayX_1
+DisplayY_1
+Xmin_1
+Xmax_1
+Ymin_1
+Ymax_1
+ExInfo_1
+IN_Address_1
+IN_City_1
+IN_Postal_1
+USER_Object_ID_1
+USER_Name_of_Store_1
+USER_Street_1
+USER_City_1
+USER_St_1
+USER_Zip_1
+USER_Gross_1
+USER_Net_1
+USER_Notes_1
+USER_Developer_1
+USER_Status_1
+USER_Units_1
+USER_Date_Entered_1
+USER_10x10_climate_1
+USER_10x10_non_climate_1
+USER_Lattitude_1
+USER_Longitude_1
+USER_Field19_1
+BUFF_DIST_1
+ORIG_FID_1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
