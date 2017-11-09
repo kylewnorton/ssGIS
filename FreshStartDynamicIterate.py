@@ -77,8 +77,30 @@ def performLoop():
     grossSquareFeet = None
     inTable = "SLCoCompetition_GeocodeAddre"
     fields = ["OBJECTID", "USER_Name_of_Store", "USER_Gross"]
-    fieldsForDeletion = ["Loc_name_1", "Status_1", "Score_1", "Match_type_1", "Match_addr_1", "LongLabel_1", "ShortLabel_1", "Addr_type_1", "Place_addr_1", "Rank_1", "AddNum_1", "AddNumFrom_1", "AddNumTo_1", "AddRange_1", "Side_1", "StPreDir_1", "StName_1", "StType_1", "StDir_1", "StAddr_1", "City_1", "Subregion_1", "Region_1", "RegionAbbr_1", "Postal_1", "Country_1", "LangCode_1", "Distance_1", "X_1", "Y_1", "DisplayX_1", "DisplayY_1", "Xmin_1", "Xmax_1", "Ymin_1", "Ymax_1", "ExInfo_1", "IN_Address_1", "IN_City_1", "IN_Postal_1", "USER_Object_ID_1", "USER_Name_of_Store_1", "USER_Street_1", "USER_City_1", "USER_St_1", "USER_Zip_1", "USER_Gross_1", "USER_Net_1", "USER_Notes_1", "USER_Developer_1", "USER_Status_1", "USER_Units_1", "USER_Date_Entered_1", "USER_10x10_climate_1", "USER_10x10_non_climate_1", "USER_Lattitude_1", "USER_Longitude_1", "USER_Field19_1", "BUFF_DIST_1", "ORIG_FID_1", "FID_facility*Buffer", "FID_facility*BufferUnion"]
-    #VARIABLES
+    fieldsForDeletion = ["Loc_name", "Status", "Score", "Match_type", "Match_addr", "LongLabel", "ShortLabel", "Addr_type",
+     "Place_addr", "Rank", "AddNum", "AddNumFrom", "AddNumTo", "AddRange", "Side", "StPreDir", "StName", "StType", "StDir",
+      "StAddr", "City", "Subregion", "Region", "RegionAbbr", "Postal", "Country", "LangCode", "Distance", "X", "Y", 
+      "DisplayX", "DisplayY", "Xmin", "Xmax", "Ymin", "Ymax", "ExInfo", "IN_Address", "IN_City", "IN_Postal", "USER_Object_ID", 
+      "USER_Name_of_Store", "USER_Street", "USER_City", "USER_St", "USER_Zip", "USER_Gross", "USER_Net", "USER_Notes", 
+      "USER_Developer", "USER_Status", "USER_Units", "USER_Date_Entered", "USER0x10_climate", "USER0x10_non_climate", "USER_Lattitude", 
+      "USER_Longitude", "USER_Field19", "BUFF_DIST", "ORIG_FID", "FID_facility*Buffer", "FID_facility*BufferUnion"]
+
+     #VARIABLES
+
+    #  [{
+    #   "OBJECTID": 0,
+    #   "USER_Name_of_Store": "Storage Plus",
+    #   "USER_Gross": 1234
+    #  },
+    #  {
+    #   "OBJECTID": 1,
+    #   "USER_Name_of_Store": "Storage Plus Plus",
+    #   "USER_Gross": 12345
+    #  }]
+
+    # with arcpy.da.SearchCursor(inTable, fields) as cursor:
+    # for row.USER_Name_of_Store in cursor:
+
 
     with arcpy.da.SearchCursor(inTable, fields) as cursor:
         for row in cursor:
@@ -93,7 +115,7 @@ def performLoop():
             expression = "FID_facility" + str(i) + "Buffer = 1"
             expressionLO = "FID_facility" + str(i) + "Buffer = -1"
             leftOverLayer = "SLCoTractsSplitable" + str(i)
-            fields = ["why_csv_Total_population"]
+            totalPopInCensusTract = ["why_csv_Total_population"]
             featureClassesForDeletion = [facility, bufferName, unionName]
            
             radius = .1
@@ -101,7 +123,7 @@ def performLoop():
 
             print("Iteration:", i)
             print("Radius is:", radius)
-            print('Store {0}, {1}, has Gross SF of {2}'.format(row[0],row[1], row[2]))
+            print('Store {0}, {1}, has  SF of {2}'.format(row[0],row[1], row[2]))
             arcpy.management.MakeFeatureLayer(inTable, facility, "OBJECTID = " + str(row[0]))
             
             #splitableTool (censusNonSplitable, censusSplitable)
@@ -114,7 +136,7 @@ def performLoop():
 
                 #Print the Total population inside the buffer
                 summedTotal = 0
-                with arcpy.da.SearchCursor(unionName, fields, expression) as cursor2:
+                with arcpy.da.SearchCursor(unionName, totalPopInCensusTract, expression) as cursor2:
                     for row2 in cursor2:
                         summedTotal = summedTotal + row2[0]
                 print('Total Population inside of the Buffer is:', summedTotal)
@@ -148,3 +170,7 @@ def executeProgram():
 #FUNCTIONS
 
 executeProgram()
+
+
+            for field in ["FID_facility*Buffer", "FID_facility*BufferUnion"]:
+                arcpy.management.DeleteField("SLCoTractsSplitable" + str(i), field)
