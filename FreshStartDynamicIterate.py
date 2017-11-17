@@ -4,7 +4,7 @@
 import arcpy
 from arcpy import env
 import os
-env.workspace = r"C:\Users\Kyle\Desktop\SS GIS-Zoning-Competition\SS GIS-Zoning-Competition\Projects\dynamicIterate\dynamicIterate.gdb"
+env.workspace = r"C:\Users\Kyle\Desktop\Alpine AntiMatter Test\New Alpine AntiMatter Test.gdb"
 
 arcpy.env.outputCoordinateSystem = arcpy.SpatialReference("NAD 1983 UTM Zone 12N")
 arcpy.env.overwriteOutput = True
@@ -71,11 +71,11 @@ def performLoop():
     i = 1
     MetroPerCapitaSFMultiplier = 7.93
     radius = .1
-    radiusIncrement = .02
+    radiusIncrement = .4
     fieldGrossSF = "USER_Gross"
     bufferPopulationDemand = None
     grossSquareFeet = None
-    inTable = "SLCoCompetition_GeocodeAddre"
+    inTable = "SLCComFew"
     fields = ["OBJECTID", "USER_Name_of_Store", "USER_Gross"]
     fieldsForDeletion = ["Loc_name", "Status", "Score", "Match_type", "Match_addr", "LongLabel", "ShortLabel", "Addr_type",
      "Place_addr", "Rank", "AddNum", "AddNumFrom", "AddNumTo", "AddRange", "Side", "StPreDir", "StName", "StType", "StDir",
@@ -171,6 +171,3 @@ def executeProgram():
 
 executeProgram()
 
-
-            for field in ["FID_facility*Buffer", "FID_facility*BufferUnion"]:
-                arcpy.management.DeleteField("SLCoTractsSplitable" + str(i), field)
